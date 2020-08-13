@@ -67,22 +67,22 @@ const uint16_t modifiers[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_QWERTY] = LAYOUT_plaid_grid(
-    KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    _______,
-    KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    DE_SCLN, KC_BSPC,
+    KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
+    KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    DE_SCLN, KC_ENT,
     _______, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    DE_COMM, DE_DOT,  DE_SLSH, _______,
-    KC_LCTL, KC_RALT, KC_LGUI, KC_LCTL, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LSFT, KC_ENT , _______, _______
+    KC_LCTL, KC_RALT, KC_LGUI, KC_LCTL, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LSFT, _______ , _______, _______
 ),
 
 [_LOWER] = LAYOUT_plaid_grid(
-    _______, DE_TILD, DE_PIPE, DE_EURO, DE_UNDS, DE_AT  , DE_AMPR, DE_UE  , _______, DE_OE  , _______, _______,
-    KC_TAB , DE_AE  , DE_SS  , DE_QST , DE_DQOT, DE_EQL , KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, DE_COLN, KC_DEL ,
+    _______, DE_AT,   DE_PIPE, DE_EURO, DE_UNDS, DE_TILD, DE_AMPR, DE_UE  , _______, DE_OE  , _______, KC_DEL,
+    KC_TAB , DE_AE  , DE_SS  , DE_QST , DE_DQOT, DE_EQL , KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, DE_COLN, KC_ENT ,
     _______, _______, _______, DE_EXLM, DE_GRV , _______, _______, DE_PLUS, DE_MINS, DE_HASH, DE_BSLS, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
 [_RAISE] = LAYOUT_plaid_grid(
-    _______,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
-    KC_TAB , DE_LESS, DE_LBRC, DE_LCBR, DE_LPRN, _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______, KC_DEL ,
+    _______,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,   KC_DEL,
+    KC_TAB , DE_LESS, DE_LBRC, DE_LCBR, DE_LPRN, _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______, KC_ENT ,
     _______, DE_MORE, DE_RBRC, DE_RCBR, DE_RPRN, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
