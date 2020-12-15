@@ -39,7 +39,7 @@ enum plaid_keycodes {
   LED_0
 };
 
-#define LOWER MO(_LOWER)
+#define LOWER LT(_LOWER,KC_SPC)
 #define RAISE MO(_RAISE)
 
 // array of keys considered modifiers for led purposes
@@ -70,13 +70,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    DE_SCLN, KC_ENT,
     _______, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    DE_COMM, DE_DOT,  DE_SLSH, _______,
-    KC_LCTL, KC_RALT, KC_LGUI, KC_LCTL, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LSFT, _______ , _______, _______
+    _______, _______, KC_LALT, RAISE,   LOWER,   KC_LSFT, KC_LSFT, KC_LCTL , KC_RGUI, _______, _______, _______
 ),
 
 [_LOWER] = LAYOUT_plaid_grid(
     _______, DE_AT,   DE_PIPE, DE_EURO, DE_UNDS, DE_TILD, DE_AMPR, DE_UE  , _______, DE_OE  , _______, KC_DEL,
     KC_TAB , DE_AE  , DE_SS  , DE_QST , DE_DQOT, DE_EQL , KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, DE_COLN, KC_ENT ,
-    _______, _______, _______, DE_EXLM, DE_GRV , _______, _______, DE_PLUS, DE_MINS, DE_HASH, DE_BSLS, _______,
+    _______, _______, DE_EXLM, DE_DLR,  DE_GRV , _______, _______, DE_PLUS, DE_MINS, DE_HASH, DE_BSLS, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
@@ -124,11 +124,6 @@ void keyboard_post_init_user(void) {
 }
 
 void eeconfig_init_user(void) {  // EEPROM is getting reset! 
-  led_config.raw = 0;
-  led_config.red_mode = LEDMODE_ON;
-  led_config.green_mode = LEDMODE_MODS;
-      eeconfig_update_user(led_config.raw);
-  eeconfig_update_user(led_config.raw);
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
@@ -136,139 +131,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 }
 
 void led_keypress_update(uint8_t led, uint8_t led_mode, uint16_t keycode, keyrecord_t *record) {
-    switch (led_mode) {
-      case LEDMODE_MODS:
-        for (int i=0;i<sizeof(modifiers) / sizeof(modifiers[0]);i++) {
-          if(keycode==modifiers[i]) {
-            if (record->event.pressed) {
-              writePinHigh(led);
-            }
-            else {
-              writePinLow(led);
-            }
-          }
-        }
-        break;
-      case LEDMODE_BLINKIN:
-        if (record->event.pressed) {
-          if(rand() % 2 == 1) {
-            if(rand() % 2 == 0) {
-              writePinLow(led);
-            }
-            else {
-              writePinHigh(led);
-            }
-          }
-        }
-        break;
-      case LEDMODE_KEY:
-        if (record->event.pressed) {
-          writePinHigh(led);
-          return;
-        }
-        else {
-          writePinLow(led);
-          return;
-        }
-        break;
-      case LEDMODE_ENTER:
-        if (keycode==KC_ENT) {
-          writePinHigh(led);
-        }
-        else {
-          writePinLow(led);
-        }
-        break;
-
-    }
+   
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  /* If the either led mode is keypressed based, call the led updater
-     then let it fall through the keypress handlers. Just to keep 
-     the logic out of this procedure */
-  if (led_config.red_mode >= LEDMODE_MODS && led_config.red_mode <= LEDMODE_ENTER) {
-      led_keypress_update(LED_RED, led_config.red_mode, keycode, record);
-  }
-  if (led_config.green_mode >= LEDMODE_MODS && led_config.green_mode <= LEDMODE_ENTER) {
-      led_keypress_update(LED_GREEN, led_config.green_mode, keycode, record);
-  }
-  switch (keycode) {
-    case QWERTY:
-      if (record->event.pressed) {
-        print("mode just switched to qwerty and this is a huge string\n");
-        set_single_persistent_default_layer(_QWERTY);
-      }
-      return false;
-      break;
-    case LED_1:
-      if (record->event.pressed) {
-        if (led_config.red_mode==LEDMODE_ON) {
-            led_config.red_mode=LEDMODE_OFF;
-            writePinLow(LED_RED);
-        }
-        else {
-            led_config.red_mode=LEDMODE_ON;
-            writePinHigh(LED_RED);
-        }
-      }
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-    case LED_2:
-      if (record->event.pressed) {
-        if (led_config.green_mode==LEDMODE_ON) {
-            led_config.green_mode=LEDMODE_OFF;
-            writePinLow(LED_GREEN);
-        }
-        else {
-            led_config.green_mode=LEDMODE_ON;
-            writePinHigh(LED_GREEN);
-        }
-      }
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-    case LED_3:
-      led_config.red_mode=LEDMODE_MODS;
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-    case LED_4:
-      led_config.green_mode=LEDMODE_MODS;
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-    case LED_5:
-      led_config.red_mode=LEDMODE_BLINKIN;
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-    case LED_6:
-      led_config.green_mode=LEDMODE_BLINKIN;
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-    case LED_7:
-      led_config.red_mode=LEDMODE_KEY;
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-    case LED_8:
-      led_config.green_mode=LEDMODE_KEY;
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-    case LED_9:
-      led_config.red_mode=LEDMODE_ENTER;
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-    case LED_0:
-      led_config.green_mode=LEDMODE_ENTER;
-      eeconfig_update_user(led_config.raw);
-      return false;
-      break;
-  }
   return true;
 }
